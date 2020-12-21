@@ -2,6 +2,7 @@ package api.chalenge.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,12 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.chalenge.dto.EmpresaDTO;
-import api.chalenge.dto.SomaDTO;
+import api.chalenge.dto.MediaDTO;
 import api.chalenge.model.Empresa;
 import api.chalenge.model.Numeros;
 import api.chalenge.service.EmpresaService;
 
 @RestController
+@CrossOrigin
 @RequestMapping("api/empresa")
 public class EmpresaController {
 	
@@ -25,20 +27,24 @@ public class EmpresaController {
 
 	@GetMapping("/find/{cnpj}")
 	public ResponseEntity<EmpresaDTO> find(@PathVariable("cnpj") String cnpj) {
-		
+		EmpresaDTO retorno = new EmpresaDTO();
 		Empresa empresa = service.repository.findByCnpj(cnpj);
-		
-		return ResponseEntity.ok().body( new EmpresaDTO(empresa.getEndereco()) );
+		if (empresa == null) {
+			retorno.setEndereco("Endereço não encontrado");
+		}else {
+			 retorno.setEndereco(empresa.getEndereco() );
+		}
+		return ResponseEntity.ok().body(retorno );
 	}
 	
 	@PostMapping("/media")
-	public ResponseEntity<SomaDTO> media(@RequestBody Numeros numero) {
+	public ResponseEntity<MediaDTO> media(@RequestBody Numeros numero) {
 		
-		SomaDTO soma = new SomaDTO();
+		MediaDTO media = new MediaDTO();
 		
-		soma.setSoma( Math.addExact(numero.getNumero1(), numero.getNumero2())/ 2 );
+		media.setMedia( Math.addExact(numero.getNumero1(), numero.getNumero2())/ 2 );
 		
-		return ResponseEntity.ok().body( soma );
+		return ResponseEntity.ok().body( media );
 	}
 
 }

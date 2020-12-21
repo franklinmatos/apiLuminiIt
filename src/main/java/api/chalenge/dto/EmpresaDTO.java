@@ -16,6 +16,10 @@ public class EmpresaDTO {
 		super();
 		this.endereco = endereco;
 	}
+
+	public EmpresaDTO() {
+		super();
+	}
 	
 	
 
